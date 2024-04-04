@@ -1,0 +1,14 @@
+[
+  {
+    "nome": "Mi13",
+    "marca": "Xiaomi",
+    "_bateria": 95,
+    "ligado": true
+  },
+  {
+    "nome": "Mi15",
+    "marca": "Xiaomi",
+    "_bateria": 10,
+    "ligado": true
+  }
+]
