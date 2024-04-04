@@ -61,4 +61,4 @@ if __name__ == '__main__':
     links[0].click()
 
     # Dorme por 10 segundos
-    sleep(TIME_TO_WAIT)
+    sleep(10)

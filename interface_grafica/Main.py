@@ -1,5 +1,6 @@
 import sys
 
+from info import Info
 from display import Display
 from Main_calculadora import MainWindow
 from PySide6.QtGui import QIcon
@@ -15,6 +16,10 @@ if __name__ == '__main__':
     icon = QIcon(str(WINDOW_ICON_PATH))
     window.setWindowIcon(icon)
     app.setWindowIcon(icon)
+
+    #info
+    info = Info('...')
+    window.addToVLayout(info)
 
     # Display
     display = Display()
