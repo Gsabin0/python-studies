@@ -21,7 +21,7 @@ if __name__ == '__main__':
     app.setWindowIcon(icon)
 
     #info
-    info = Info('3 * 5 = 15')
+    info = Info('Sua conta')
     window.addToVLayout(info)
 
     # Display
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     window.addToVLayout(display)
 
     # GRID
-    buttonGrid = ButtonGrid(display)
+    buttonGrid = ButtonGrid(display, info, window)
     window.vLayout.addLayout(buttonGrid)
 
     # Executa tudo
