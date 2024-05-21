@@ -1,5 +1,4 @@
 import sys
-
 from info import Info
 from display import Display
 from Main_calculadora import MainWindow
@@ -7,7 +6,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from Variaveis import WINDOW_ICON_PATH
 from styles import setupTheme
-from button import Button, ButtonGrid
+from button import ButtonGrid
 
 
 if __name__ == '__main__':
@@ -20,7 +19,7 @@ if __name__ == '__main__':
     window.setWindowIcon(icon)
     app.setWindowIcon(icon)
 
-    #info
+    # info
     info = Info('Sua conta')
     window.addToVLayout(info)
 

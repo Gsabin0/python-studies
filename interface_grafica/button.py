@@ -12,19 +12,21 @@ if TYPE_CHECKING:
 
 
 class Button(QPushButton):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.configStyle()
+        self.config_style()
 
-    def configStyle(self):
-        font =  self.font()
+    def config_style(self):
+        font = self.font()
         font.setPixelSize(MEDIUM_FONT_SIZE)
         self.setFont(font)
         self.setMinimumSize(65, 70)
 
 
 class ButtonGrid(QGridLayout):
-    def __init__(self, display: 'Display', info: 'Info', window: 'MainWindow', *args, **kwargs)-> None:
+
+    def __init__(self, display: 'Display', info: 'Info', window: 'MainWindow', *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._gridMask = [
             ['C', 'D', '^', '/'],
@@ -42,7 +44,8 @@ class ButtonGrid(QGridLayout):
         self._right = None
         self._op = None
         self.equation = self._equationInitialValue
-        self._makeGrid()
+        self._make_grid()
+
     @property
     def equation(self):
         return self._equation
@@ -52,55 +55,56 @@ class ButtonGrid(QGridLayout):
         self._equation = value
         self.info.setText(value)
 
-    def _makeGrid(self):
+    def _make_grid(self):
         self.display.eqPressed.connect(self._eq)
         self.display.delPressed.connect(self._backspace)
         self.display.clearPressed.connect(self._clear())
-        self.display.inputPressed.connect(self._insertToDisplay)
-        self.display.operatorPressed.connect(self._configLeftOp)
+        self.display.inputPressed.connect(self._insert_to_display)
+        self.display.operatorPressed.connect(self._config_left_op)
         for i, row in enumerate(self._gridMask):
             for j, button_text in enumerate(row):
                 button = Button(button_text)
                 if not isNUmOrDot(button_text) and not isEmpty(button_text):
                     button.setProperty('cssClass', 'specialButton')
-                    self._configSpecialButton(button)
+                    self._config_special_button(button)
                 self.addWidget(button, i, j)
-                slot = self._makeSlot(self._insertToDisplay, button_text)
-                self._connectButtonClicked(button, slot)
+                slot = self._make_slot(self._insert_to_display, button_text)
+                self._connect_button_clicked(button, slot)
 
-    def _connectButtonClicked(self, button, slot):
-        button.clicked.connect(slot)  # type: ignore
+    @staticmethod
+    def _connect_button_clicked(button, slot):
+        button.clicked.connect(slot)
 
-    def _configSpecialButton(self, button):
+    def _config_special_button(self, button):
         text = button.text()
 
         if text == 'C':
-            self._connectButtonClicked(button, self._clear)
+            self._connect_button_clicked(button, self._clear)
 
         if text == 'D':
-            self._connectButtonClicked(button, self.display.backspace)
+            self._connect_button_clicked(button, self.display.backspace)
 
         if text == 'N':
-            self._connectButtonClicked(button, self._invertNumber)
+            self._connect_button_clicked(button, self._invert_number)
 
         if text in '+-/*^':
-            self._connectButtonClicked(
+            self._connect_button_clicked(
                 button,
-                self._makeSlot(self._configLeftOp, text)
+                self._make_slot(self._config_left_op, text)
             )
 
         if text == '=':
-            self._connectButtonClicked(button, self._eq)
+            self._connect_button_clicked(button, self._eq)
 
     @Slot()
-    def _makeSlot(self, func, *args, **kwargs):
+    def _make_slot(self, func, *args, **kwargs):
         @Slot(bool)
-        def realSlot(_):
+        def real_slot(_):
             func(*args, **kwargs)
-        return realSlot
+        return real_slot
 
     @Slot()
-    def _invertNumber(self):
+    def _invert_number(self):
         displayText = self.display.text()
         if not isValidNumber(displayText):
             return
@@ -111,8 +115,8 @@ class ButtonGrid(QGridLayout):
         self.display.setFocus()
 
     @Slot()
-    def _insertToDisplay(self, text):
-        newDisplayValue = self.display.text() +text
+    def _insert_to_display(self, text):
+        newDisplayValue = self.display.text() + text
         if not isValidNumber(newDisplayValue):
             return
         self.display.insert(text)
@@ -129,7 +133,7 @@ class ButtonGrid(QGridLayout):
         self.display.setFocus()
 
     @Slot()
-    def _configLeftOp(self, text):
+    def _config_left_op(self, text):
         displayText = self.display.text()  # Deverá ser meu número _left
         self.display.clear()  # Limpa o display
         self.display.setFocus()
@@ -137,7 +141,7 @@ class ButtonGrid(QGridLayout):
         # Se a pessoa clicou no operador sem
         # configurar qualquer número
         if not isValidNumber(displayText) and self._left is None:
-            self._showError('Você não digitou nada.')
+            self._show_error('Você não digitou nada.')
             return
 
         # Se houver algo no número da esquerda,
@@ -153,7 +157,7 @@ class ButtonGrid(QGridLayout):
         displayText = self.display.text()
 
         if not isValidNumber(displayText) or self._left is None:
-            self._showError('Conta incompleta.')
+            self._show_error('Conta incompleta.')
             return
 
         self._right = float(displayText)
@@ -167,9 +171,9 @@ class ButtonGrid(QGridLayout):
             else:
                 result = eval(self.equation)
         except ZeroDivisionError:
-            self._showError('Divisão por zero.')
+            self._show_error('Divisão por zero.')
         except OverflowError:
-            self._showError('Essa conta não pode ser realizada.')
+            self._show_error('Essa conta não pode ser realizada.')
 
         self.display.clear()
         self.info.setText(f'{self.equation} = {result}')
@@ -180,7 +184,7 @@ class ButtonGrid(QGridLayout):
         if result == 'error':
             self._left = None
 
-    def _makeDialog(self, text):
+    def _make_dialog(self, text):
         msgBox = self.window.makeMsgBox()
         msgBox.setText(text)
         return msgBox
@@ -190,14 +194,14 @@ class ButtonGrid(QGridLayout):
         self.display.backspace()
         self.display.setFocus()
 
-    def _showError(self, text):
-        msgBox = self._makeDialog(text)
+    def _show_error(self, text):
+        msgBox = self._make_dialog(text)
         msgBox.setIcon(msgBox.Icon.Critical)
         msgBox.exec()
         self.display.setFocus()
 
-    def _showInfo(self, text):
-        msgBox = self._makeDialog(text)
+    def _show_info(self, text):
+        msgBox = self._make_dialog(text)
         msgBox.setIcon(msgBox.Icon.Information)
         msgBox.exec()
         self.display.setFocus()
